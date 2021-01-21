@@ -34,14 +34,14 @@ Este projeto tem por objetivo prover um sistema de rotas simples para projetos P
 
 # Tecnologias utilizadas:
 
-- PHP
+- PHP ^7
 - Composer
 
 # Por onde começar:
 
 ## Back end
 
-Pré-requisitos: PHP7, composer. 
+Pré-requisitos: PHP ^7 || ^8.0, composer. 
 
 Clone o repositório dentro da pasta que contém o backend do projeto.
 
@@ -201,4 +201,5 @@ https://www.linkedin.com/in/evelyn-brandão
 **Rodrigo Yuri Veloso**
 
 https://www.linkedin.com/in/rodrigo-yuri
-github.com/rodrigo-yuri/
+
+https://github.com/rodrigo-yuri/
