@@ -1,10 +1,13 @@
 <?php
 
+namespace App\SimpleRoutePhp;
+
 class Route
 {
     private array $routes = [];
     private string $method = "";
     private string $baseUrl = "";
+    private string $path = "";
     private string $group = "";
     private string $namespace = "";
     private array $error = [];
@@ -14,6 +17,12 @@ class Route
     {
         $this->baseUrl = (substr($baseUrl, -1) != "/") ? $baseUrl : substr($baseUrl, 0, -1);
         $this->method = $_SERVER["REQUEST_METHOD"];
+        $this->path = (filter_input(INPUT_GET, "route", FILTER_DEFAULT) ?? "/");
+    }
+
+    public function getMethod()
+    {
+        return $this->path;
     }
 
     public function group(string $group)
@@ -70,19 +79,20 @@ class Route
     }
 
 
-    private function getDataRequest(): array
+    private function getDataRequest(): ?array
     {
-        $array = null;
+        $typeRequest = array("GET", "PUT", "DELETE", "PATCH");
 
-        //parse_str tranforma a string em array associativo
+        if ($this->method == "POST") {
+            $array = filter_input_array(INPUT_POST, FILTER_DEFAULT);
+            return $array;
+        }
 
-        // pega os dados na pela url
-        //parse_str($_SERVER['QUERY_STRING'], $array);
-        // ou
-        // pega os dados por formulário
-        parse_str(file_get_contents("php://input"), $array);
-
-        return $array;
+        if (in_array($this->method, $typeRequest)) {
+            //parse_str tranforma a string em array associativo
+            parse_str(file_get_contents("php://input"), $array);
+            return $array;
+        }
 
         //https://www.php.net/manual/pt_BR/wrappers.php.php
     }
@@ -91,9 +101,9 @@ class Route
     public function dispatch()
     {
         // $urlNow = localhost/teste/5
-        $urlNow = "{$this->baseUrl}{$_SERVER['REQUEST_URI']}";
+        $urlNow = "{$this->baseUrl}{$this->path}";
 
-        $this->setError(true, "Route not found: $urlNow");
+        $this->setError(true, "Route not found: {$urlNow}", 404);
 
         foreach ($this->routes[$this->method] as $key => $value) {
             // $key = localhost/teste/([^/]+)
@@ -104,7 +114,6 @@ class Route
             }
         }
     }
-
 
     private function execute(array $data, string $path)
     {
@@ -121,39 +130,44 @@ class Route
         // $valuesRoute = Array([0] => 3, [1] => "test-product")
         $valuesRoute = array_values(array_diff(explode("/", $path), explode("/", $data["route"])));
 
-        $params = [];
+        $paramsUrl = [];
 
         for ($i = 0; $i < count($keysRoute); $i++) {
-            $params[$keysRoute[$i][1]] = $valuesRoute[$i];
+            $paramsUrl[$keysRoute[$i][1]] = $valuesRoute[$i];
         }
+
+        $paramsForm = ($paramsUrl == [] ? [$this->getDataRequest()] : [...array_values($paramsUrl), $this->getDataRequest()]);
 
         if (is_callable($data["handler"])) {
             $method = $data["handler"];
-            call_user_func_array($method, $params);
 
-            $this->setError(false, "Execute success: {$data["handler"]}");
+            call_user_func($method, ...$paramsForm);
+
+            $this->setError(false, "Not Error");
             return true;
         }
 
         list($class, $method) = explode(":", $data["handler"]);
 
-        $class = "{$data["namespace"]}\\{$class}";
+        $class = $data['namespace'] . "\\{$class}";
 
         if (class_exists($class)) {
 
             if (method_exists($class, $method)) {
 
-                $parameters = ($params == [] ? [$this->getDataRequest()] : [...array_values($params), $this->getDataRequest()]);
+                $obj = new $class($this);
 
-                call_user_func_array(array($class, $method), $parameters);
+                $obj->$method(...$paramsForm);
 
-                $this->setError(false, "Execute success: {$class}->{$method}");
+                $this->setError(false, "Not Error");
                 return true;
             }
-            $this->setError(true, "Method not exists: {$method}");
+            $this->setError(true, "Method not exists: {$method}()", 500);
+            return false;
         }
 
-        $this->setError(true, "Class not exist: {$class}");
+        $this->setError(true, "Class not exist: {$class}", 500);
+        return false;
     }
 
     public function getError()
@@ -161,16 +175,10 @@ class Route
         return $this->error;
     }
 
-    private function setError($err_code, $msg)
+    private function setError(bool $error, $msg, $codeStatus = 200)
     {
-        if ($err_code) {
-            $this->error["error"] = true;
-            $this->error["route_exists"] = "Not Found";
-            $this->error["message"] = $msg;
-        } else {
-            $this->error["error"] = false;
-            $this->error["route_exists"] = "Found";
-            $this->error["message"] = $msg;
-        }
+        $this->error["error"] = $error;
+        $this->error["status_code"] = $codeStatus;
+        $this->error["message"] = $msg;
     }
 }
