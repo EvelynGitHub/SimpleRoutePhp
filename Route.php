@@ -105,12 +105,15 @@ class Route
 
         $this->setError(true, "Route not found: {$urlNow}", 404);
 
-        foreach ($this->routes[$this->method] as $key => $value) {
-            // $key = localhost/teste/([^/]+)
-            if (preg_match("~^" . $key . "$~", $urlNow, $found)) {
-                //has $key at $urlNow
-                $this->execute($value, $urlNow);
-                break;
+        if (isset($this->routes[$this->method])) {
+
+            foreach ($this->routes[$this->method] as $key => $value) {
+                // $key = localhost/teste/([^/]+)
+                if (preg_match("~^" . $key . "$~", $urlNow, $found)) {
+                    //has $key at $urlNow
+                    $this->execute($value, $urlNow);
+                    break;
+                }
             }
         }
     }
