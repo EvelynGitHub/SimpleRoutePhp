@@ -1,0 +1,19 @@
+{
+    "name": "simplephp/simple-route",
+    "description": "pacote para criação de rotas simples e genérico em PHP.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Evelyn",
+            "email": "evelynbrandao15@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "SimplePhp\\SimpleRoute\\": "src"
+        }
+    },
+    "require": {}
+}
