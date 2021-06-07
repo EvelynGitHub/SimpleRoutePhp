@@ -67,7 +67,8 @@ class Route
     {
         $group = empty($this->group) ? "" : "{$this->group}";
 
-        $route = trim("{$this->baseUrl}{$group}{$route}");
+        // $route = trim("{$this->baseUrl}{$group}{$route}");
+        $route = trim("{$group}{$route}");
 
         $this->routes[$http_verb][$route] = [
             "namespace" => $this->namespace,
@@ -103,7 +104,7 @@ class Route
 
                 $obj = new $class($this);
 
-                $obj->$method(...$paramsForm);
+                $obj->$method($paramsForm);
 
                 return true;
             }
@@ -143,6 +144,8 @@ class Route
     {
         preg_match_all('/\{([^\}]*)\}/', $route, $variables);
 
+        // $variables = [["{id}"],["id"]]
+
         $regex = str_replace('/', '\/', $route);
 
         foreach ($variables[0] as $k => $variable) {
@@ -153,6 +156,8 @@ class Route
         $regex = preg_replace('/{([a-zA-Z]+)}/', '([a-zA-Z0-9+])', $regex);
 
         $result = preg_match('/^' . $regex . '$/', $path, $params);
+
+        array_shift($params);
 
         $this->params = $params;
 

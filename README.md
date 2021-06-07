@@ -12,8 +12,8 @@ As rotas existentes no Demo do Projeto são:
   DELETE  -   https://teste-route.herokuapp.com/teste/{id}
 </pre>
 
-Onde GET é a url que a **Demo do projeto** mostra e os locais com <code> {}</code>  são parametros dinâmicos da url.
-É possível testar essas rotas com softwares como <b>Postman e Insomnia</b> ou atraves de conexões providas por bibliiotecas, como por exemplo, AJAX do JQuery ou axios.
+Onde GET é a url que a **Demo do projeto** mostra e os locais com <code> {}</code>  são parâmetros dinâmicos da url.
+É possível testar essas rotas com softwares como <b>Postman e Insomnia</b> ou através de conexões providas por bibliotecas, como por exemplo, AJAX do JQuery ou axios.
 
 ![GitHub](https://img.shields.io/github/license/EvelynGitHub/assets-readme)
 
@@ -21,20 +21,20 @@ Onde GET é a url que a **Demo do projeto** mostra e os locais com <code> {}</co
 
 # Sobre o Projeto:
 
-Este projeto tem por objetivo prover um sistema de rotas simples para projetos PHP. É focado nas funções básicas que um sistema de rotas deveria ter, além mostrar erros de forma mais amigável ao desenvolver. Tudo isso para a implementação, uso e debug possa ser realizado de maneira rápida e fácil.
+Este projeto tem por objetivo prover um sistema de rotas simples para projetos PHP. É focado nas funções básicas que um sistema de rotas deveria ter, além de mostrar erros de forma mais amigável ao desenvolver. Tudo isso para a implementação, uso e debug possa ser realizado de maneira rápida e fácil.
 
 ### Principais funções:
 
 1 - Suporte para os verbos GET, POST, PUT, PATCH e DELETE;
 
-2 - Execução de um função ou metodo de classe direto pelo SimpleRoutePhp;
+2 - Execução de um função ou método de classe direto pelo SimpleRoutePhp;
 
-3 - Função getError() com erros amigavél e mais expecíficos;
+3 - Função getError() com erros amigável e mais específicos;
 
 
 # Tecnologias utilizadas:
 
-- PHP ^7
+- PHP7
 - Composer
 
 # Por onde começar:
