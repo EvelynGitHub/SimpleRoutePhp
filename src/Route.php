@@ -104,7 +104,7 @@ class Route
 
                 $obj = new $class($this);
 
-                $obj->$method($paramsForm);
+                $obj->$method(...$paramsForm);
 
                 return true;
             }
@@ -142,14 +142,19 @@ class Route
 
     private function checkUrlWithParams(string $route, string $path)
     {
+        /**
+         * $variables = Array(
+         *      [0] => Array([0] => {id}, [1] => {slug}),
+         *      [1] => Array([0] => id, [1] => slug)
+         * )
+         */
         preg_match_all('/\{([^\}]*)\}/', $route, $variables);
-
-        // $variables = [["{id}"],["id"]]
 
         $regex = str_replace('/', '\/', $route);
 
+        $replacement = '([a-zA-Z0-9\-\_\ ]+)';
+
         foreach ($variables[0] as $k => $variable) {
-            $replacement = '([a-zA-Z0-9\-\_\ ]+)';
             $regex = str_replace($variable, $replacement, $regex);
         }
 
@@ -158,6 +163,8 @@ class Route
         $result = preg_match('/^' . $regex . '$/', $path, $params);
 
         array_shift($params);
+
+        $params = array_combine($variables[1], $params);
 
         $this->params = $params;
 
