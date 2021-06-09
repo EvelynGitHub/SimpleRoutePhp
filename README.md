@@ -1,6 +1,6 @@
 # SimpleRoutePhp
 
-<center>
+
   
 [Demo do Projeto](https://teste-route.herokuapp.com/teste/)
 
@@ -15,58 +15,94 @@ As rotas existentes no Demo do Projeto são:
 Onde GET é a url que a **Demo do projeto** mostra e os locais com <code> {}</code>  são parâmetros dinâmicos da url.
 É possível testar essas rotas com softwares como <b>Postman e Insomnia</b> ou através de conexões providas por bibliotecas, como por exemplo, AJAX do JQuery ou axios.
 
+<p style="font-size:12px;"> <b>Obs.:</b> A demo refere-se a uma versão mais antiga do SimpleRoutePhp. </p>
+
+<center>
+
 ![GitHub](https://img.shields.io/github/license/EvelynGitHub/assets-readme)
 
 </center>
 
 # Sobre o Projeto:
 
-Este projeto tem por objetivo prover um sistema de rotas simples para projetos PHP. É focado nas funções básicas que um sistema de rotas deveria ter, além de mostrar erros de forma mais amigável ao desenvolver. Tudo isso para a implementação, uso e debug possa ser realizado de maneira rápida e fácil.
+Este projeto tem por objetivo prover um sistema de rotas simples para projetos PHP. É focado nas funções básicas que um sistema de rotas deveria ter, como GET, POST, PUT e DELETE. Tudo isso para que a implementação e uso possa ser realizado de maneira rápida e fácil.
 
-### Principais funções:
+## Principais funções:
 
-1 - Suporte para os verbos GET, POST, PUT, PATCH e DELETE;
+1. Suporte para os verbos GET, POST, PUT, PATCH e DELETE;
 
-2 - Execução de um função ou método de classe direto pelo SimpleRoutePhp;
+1. Execução de um função ou método de classe direto pelo SimpleRoutePhp;
 
-3 - Função getError() com erros amigável e mais específicos;
+1. Função <code>group()</code> para agrupar suas URLs com base num pre fixo comum;
 
 
 # Tecnologias utilizadas:
 
-- PHP7
+- PHP 7^
 - Composer
 
 # Por onde começar:
 
+Para fins de exemplo a seguinte estrutura será usada como base, entretanto nada impede de modificar como achar melhor, bastando apenas ter atenção aos caminhos dos arquivos:
+
+```
+> modules
+|   > SimpleRoutePhp
+> public
+|   index.php
+> src
+|   > Controller
+|   |   Teste.php
+> vendor
+  .htaccess
+  composer.json
+  env.php
+```
+
 ## Back end
 
-Pré-requisitos: PHP ^7 || ^8.0, composer. 
+Pré-requisitos: PHP ^7 ou ^8.0 e composer. 
 
-Clone o repositório dentro da pasta que contém o backend do projeto.
+Clone o repositório dentro da pasta que contém o backend do projeto (no nosso exemplo, pasta `modules`).
 
 ```bash
 # clonar repositório 
 git clone https://github.com/EvelynGitHub/SimpleRoutePhp.git
 ```
 
-Abra o arquivo <code>Route.php</code> dentro de SimpleRoutePhp e altere o namespace como achar necessário para ter compatibilidade com o composer.json, por exemplo:
+Abra o arquivo <code>composer.json</code> do seu projeto para adicionar o SimpleRoutePhp, modificando da seguinte forma:
 
 Para um <code>composer.json</code> onde:
 ```json
-  "autoload": {
-        "psr-4": {
-            "App\\": "src"
+  {
+    "name": "...",
+    "authors": [
+        ...
+    ],
+    "repositories": [
+        {
+            "type": "path",
+            "url": "./modules/SimpleRoutePhp"
         }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        },
+        "files": [
+            "./env.php"   
+        ]
+    },
+    "require": {
+        "simplephp/simple-route": "dev-main"
     }
-```
-O <code>namespace</code> de Route.php deve ser:
-```php
-  namespace App\SimpleRoutePhp;
+}
 ```
 
-##IMPORTANTE
-Para a execução correta do seu projeto junto com o SimpleRoutePhp, é importante ter na raiz de seu projeto um arquivo <code> .htaccess</code> com um conteúdo semelhante à:
+**OBS.:** Atente-se para a chave "repositories" e "require", isso pode mudar de acordo com a versão e local onde clonou o SimpleRoutePhp.
+
+### **IMPORTANTE**
+Para a execução correta do seu projeto junto com o SimpleRoutePhp, é importante ter na raiz de seu projeto um arquivo <code> .htaccess</code>. No exemplo usado de base o conteúdo é semelhante à:
 
 ```apache
   RewriteEngine On
@@ -78,7 +114,7 @@ Para a execução correta do seu projeto junto com o SimpleRoutePhp, é importan
   RewriteRule ^(.*)$ index.php?route=/$1 [L,QSA]
 ```
 
-Para o <code> .htaccess</code> acima, coloque um <code>index.php</code> em sua raiz também. Esse será o arquivo onde as rotas serão definidas.
+Para o <code> .htaccess</code> acima, coloque um <code>index.php</code> em sua raiz também. Esse será o arquivo onde as rotas serão definidas. No exemplo o <code> .htaccess</code> aponta para o index.php dentro de "public"
 
 
 # Como começar a usar:
@@ -93,7 +129,7 @@ Aqui pode temos um pequeno manual de como se usa o sistema para as configuraçõ
   ```php
 <?php
 
-use App\SimpleRoutePhp\Route;
+use SimplePhp\Route;
 
 require __DIR__ . "/vendor/autoload.php";
 
@@ -105,9 +141,9 @@ $route->get("/", function () {
      echo "<h1>GET</h1>";
 });
 
-$route->dispatch();
+$route->execute();
 ```
-  O metodo dispatch() é obrigatorio ser chamado para as rotas funcionarem.
+  O metodo execute() é obrigatório ser chamado para as rotas funcionarem.
   
 </details>
 
