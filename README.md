@@ -71,8 +71,6 @@ git clone https://github.com/EvelynGitHub/SimpleRoutePhp.git
 ```
 
 Abra o arquivo <code>composer.json</code> do seu projeto para adicionar o SimpleRoutePhp, modificando da seguinte forma:
-
-Para um <code>composer.json</code> onde:
 ```json
   {
     "name": "...",
@@ -106,12 +104,11 @@ Para a execução correta do seu projeto junto com o SimpleRoutePhp, é importan
 
 ```apache
   RewriteEngine On
+  RewriteBase /
 
-  # Para o SimpleCrudPhp
-  # ROUTER URL Rewrite
-  RewriteCond %{SCRIPT_FILENAME} !-f
-  RewriteCond %{SCRIPT_FILENAME} !-d
-  RewriteRule ^(.*)$ index.php?route=/$1 [L,QSA]
+  RewriteCond %{THE_REQUEST} public/([^\s?]*) [NC]
+  RewriteRule ^ $1 [L,NE,R=302]
+  RewriteRule ^((?!public/).*)$ seu_projeto/public/index.php?route=/$1 [L,NC]
 ```
 
 Para o <code> .htaccess</code> acima, coloque um <code>index.php</code> em sua raiz também. Esse será o arquivo onde as rotas serão definidas. No exemplo o <code> .htaccess</code> aponta para o index.php dentro de "public"
@@ -129,7 +126,7 @@ Aqui pode temos um pequeno manual de como se usa o sistema para as configuraçõ
   ```php
 <?php
 
-use SimplePhp\Route;
+use SimplePhp\SimpleRoute\Route;
 
 require __DIR__ . "/vendor/autoload.php";
 
@@ -143,7 +140,7 @@ $route->get("/", function () {
 
 $route->execute();
 ```
-  O metodo execute() é obrigatório ser chamado para as rotas funcionarem.
+  O método execute() é obrigatório ser chamado ao final das rotas para que elas funcionem.
   
 </details>
 
@@ -176,7 +173,7 @@ $route->delete("/{id}", function ($id) {
 
  
  ```
-   Rotas que chamam um metodo de classe.
+   Rotas que chamam um método de classe.
  ```php
 $route->get("/", "Controller:index");
 
@@ -193,10 +190,20 @@ $route->delete("/{id}", "Controller:delete");
 <details>
   <summary><b>Usando Grupos</b></summary>
   
-  Todas as rotas abaixo do <code>->group()</code> usarão ele como base, por isso, caso use mais de um gropo nas rotas, certifique-se que a rota referente a ele esta abaixo do <code>->group()</code> correspondente.
+  Todas as rotas abaixo do <code>->group()</code> usarão ele como base, por isso, caso use mais de um grupo nas rotas, certifique-se que a rota referente a ele esta abaixo do <code>->group()</code> correspondente.
   
 ```php
+  //URL_BASE/teste
   $route->group("teste");
+
+  //URL_BASE/teste/produto
+  $route->group("teste/produto");
+
+  //URL_BASE/caixa
+  $route->group("caixa");
+
+  //URL_BASE/caixa/teste
+  $route->group("caix/teste");
 ```
   
 </details>
@@ -212,21 +219,7 @@ $route->delete("/{id}", "Controller:delete");
 ```
 </details>
 
-<details>
-  <summary><b>Vizualizando erros</b></summary>
-  
-  Pode ser colocado logo abaixo do <code>$route->dispatch();</code>.
-  
-```php
-  
-$error = $route->getError();
-
-if ($error["error"]) {
-    echo json_encode($error);
-}
-```
-  
-</details>
+___
 
 # Autor(es)
 
