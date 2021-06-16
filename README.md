@@ -106,6 +106,9 @@ Para a execução correta do seu projeto junto com o SimpleRoutePhp, é importan
   RewriteEngine On
   RewriteBase /
 
+  RewriteCond %{SCRIPT_FILENAME} !-f
+  RewriteCond %{SCRIPT_FILENAME} !-d
+
   RewriteCond %{THE_REQUEST} public/([^\s?]*) [NC]
   RewriteRule ^ $1 [L,NE,R=302]
   RewriteRule ^((?!public/).*)$ seu_projeto/public/index.php?route=/$1 [L,NC]
